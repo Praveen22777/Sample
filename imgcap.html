@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Take Photo</title>
+  <style>
+    video, canvas {
+      display: block;
+      margin: 10px auto;
+      max-width: 100%;
+    }
+    
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Take a Photo Using Webcam</h1>
+  <video id="video" autoplay></video>
+  <button id="takePhoto">Take Photo</button>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <img id="photo" alt="Your photo will appear here"/>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    const takePhotoButton = document.getElementById('takePhoto');
+    const context = canvas.getContext('2d');
+
+    
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error("Error accessing webcam:", err);
+      });
+
+   
+    takePhotoButton.addEventListener('click', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/png');
+      photo.src = imageData;
+      photo.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
